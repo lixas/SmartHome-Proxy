@@ -1,0 +1,43 @@
+{
+"gmt": 2,
+"screen":{
+	"time": 120,
+	"bright": 400,
+	"down": 2
+},
+"wifi": {
+	"ssid" : "Your-WiFi-Name",
+	"pass" : "Very-Secret-Password"
+},
+"mqtt": {
+	"broker":"server.mqtt.com",
+	"base":"BLE/to/HTTP/path/onbroker"
+},
+"apikey": {
+	"openweather":"Your-OpenWeather-API-key",
+	"github": "Not-Yet-Need-Github-Token"
+},
+"sensors": [
+	{
+		"mac" : "11aa22bb33cc",
+		"title": "Balcony",
+		"type" : "mija",
+		"order" : 1,
+		"simulate": 0
+	},
+	{
+		"mac" : "44dd55ee66ff",
+		"title": "Simulator",
+		"type" : "soil",
+		"order" : 2,
+		"simulate": 1
+	},
+	{
+		"mac" : "000000",
+		"title": "Weather outside",
+		"type" : "weather",
+		"order" : 6,
+		"simulate": 0
+	}
+]
+}
