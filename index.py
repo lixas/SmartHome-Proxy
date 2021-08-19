@@ -1,4 +1,7 @@
-import ubluetooth, network, time, ubinascii, machine, gc, esp, json
+# best version to use
+# C:\Users\lixas\Workspace\Firmware\Micropython_ESP32\esp32-idf4-20200902-v1.13.bin
+
+import ubluetooth, network, ubinascii, machine, gc, esp, json, time
 from micropython import const
 from lib.mqtt import MQTTClient
 esp.osdebug(None)
@@ -22,12 +25,19 @@ sensor_mac_list = []
 for sens in global_settings["sensors"]:
     sensor_mac_list.append(sens['mac'])
 
-c = MQTTClient("BLE-To-HTTP", global_settings["mqtt"]["broker"])
-c.connect()
+c = MQTTClient("BLE-To-HTTP_{}".format(ubinascii.hexlify(machine.unique_id())), global_settings["mqtt"]["broker"])
+try:
+    c.connect()
+except:
+    #sleep for 60 seconds (60000 milliseconds)
+    print("Can not connect. Deep sleep 1 minute then restart")
+    machine.deepsleep(60000)
+
 
 
 def bt_irq(event, data):
-    global led
+    global led, dog
+    dog.feed()
     led.value(not led.value())
     if event == const(6):       # _IRQ_SCAN_DONE
         print("Complete BLE scanning")
@@ -50,4 +60,5 @@ def bt_irq(event, data):
 ble = ubluetooth.BLE()
 ble.active(True)
 ble.irq(handler=bt_irq)
+dog = machine.WDT(timeout=30000)    # 30 sec
 ble.gap_scan(0, 30000, 30000)
