@@ -25,12 +25,13 @@ sensor_mac_list = []
 for sens in global_settings["sensors"]:
     sensor_mac_list.append(sens['mac'])
 
-c = MQTTClient("BLE-To-HTTP_{}".format(ubinascii.hexlify(machine.unique_id())), global_settings["mqtt"]["broker"])
+c = MQTTClient("BLE-To-HTTP_{}".format(ubinascii.hexlify(machine.unique_id()).decode()), global_settings["mqtt"]["broker"], keepalive=60)
+# c = MQTTClient("BLE-To-HTTP-PROXY", global_settings["mqtt"]["broker"])
 try:
     c.connect()
 except:
     #sleep for 60 seconds (60000 milliseconds)
-    print("Can not connect. Deep sleep 1 minute then restart")
+    print("Can not connect to MQTT. Deep sleep 1 minute then restart")
     machine.deepsleep(60000)
 
 
@@ -59,6 +60,6 @@ def bt_irq(event, data):
 
 ble = ubluetooth.BLE()
 ble.active(True)
-ble.irq(handler=bt_irq)
+ble.irq(bt_irq)
 dog = machine.WDT(timeout=30000)    # 30 sec
 ble.gap_scan(0, 30000, 30000)
